@@ -720,9 +720,8 @@ add(annualFeeButton);
 			if (i == 0) {
 				tempGraphic += "     ";
 				for (int j = 0; j < currentShowtime.getnumber_of_columns(); j++) {
-					tempGraphic += j + "  ";
+					tempGraphic += (j + 1) + "  "; // Columns start from 1
 				}
-				
 				tempGraphic += "\n   __";
 				for (int j = 0; j < currentShowtime.getnumber_of_columns(); j++) {
 					tempGraphic += "___";
@@ -731,7 +730,8 @@ add(annualFeeButton);
 			}
 			for (int j = 0; j < currentShowtime.getnumber_of_columns(); j++) {
 				if (j == 0) {
-					tempGraphic += i + "  | ";
+					char rowLetter = (char) ('A' + i); // Convert row index to letter
+					tempGraphic += rowLetter + "  | ";
 				}
 				if (currentShowtime.getSeatAvaliability(i, j) == true) {
 					tempGraphic += "X  ";
@@ -751,7 +751,7 @@ add(annualFeeButton);
 						tempGraphic += "o  ";
 					}
 				} else {
-					tempGraphic += "o ";
+					tempGraphic += "o  ";
 				}
 			}
 			tempGraphic += "\n";
@@ -760,6 +760,7 @@ add(annualFeeButton);
 		seatGraphicLabel.setText(tempGraphic);
 		seatGraphicLabel.setVisible(true);
 	}
+	
 
 	private static final long serialVersionUID = 1L;
 }
