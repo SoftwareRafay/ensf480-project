@@ -108,7 +108,7 @@ add(backButton);
 					UpdateDB dbUpdater = new UpdateDB();
 		
 					if (dbReader.isTicketExists(ticketId)) { 
-						dbUpdater.removeTicketFromDatabase(ticketId); // Remove ticket
+						dbUpdater.removeTicketFromDatabase(ticketId); 
 		
 						// Generate a random voucher
 						String voucherCode = VoucherGenerator.generateVoucherCode();

@@ -11,6 +11,7 @@ package Boundary;
 import Entity.*;
 import Control.*;
 import database.*;
+import database.UpdateDB;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -155,36 +156,43 @@ add(backButton);
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				boolean infoValid;
-			
+		
 				if (backend.getCurrentRegisteredUser() != null) {
 					String name = backend.getCurrentRegisteredUser().getBankInfo().getName_of_the_customer();
-
 					String cardNum = backend.getCurrentRegisteredUser().getBankInfo().getpayment_card_number();
 					String email = backend.getCurrentRegisteredUser().getgmail_of_user();
-					
+		
 					invalidInfoErrorLabel.setVisible(false);
-					
-
+		
 					if (backend.getDataController().getInst().CardInfo_verification(name, cardNum)) {
 						infoValid = true;
-					} 
-					else {
+					} else {
 						infoValid = false;
 					}
-					
+		
 					if (infoValid) {
 						double finalTotal = backend.getCurrentUser().getCart().gettotalCost();
-						processPayment(frame, backend, finalTotal, backend.getCurrentRegisteredUser().getBankInfo(),email);
+						processPayment(frame, backend, finalTotal, backend.getCurrentRegisteredUser().getBankInfo(), email);
+		
+						UpdateDB dbUpdater = new UpdateDB();
+						try {
+							dbUpdater.saveTicket();
+						} catch (Exception ex) {
+							JOptionPane.showMessageDialog(frame, 
+									"Issue saving ticket to database", 
+									"Database Error", 
+									JOptionPane.ERROR_MESSAGE);
+							ex.printStackTrace();
 						}
-						else  {
-							invalidInfoErrorLabel.setVisible(true);
-						} 
-						
-					} 
-					
+					} else {
+						invalidInfoErrorLabel.setVisible(true);
+					}
+				}
+		
 				frame.revalidate();
 			}
 		});
+		
 		
 		if (backend.getCurrentRegisteredUser() != null) {
 			userStoredBankingButton.setVisible(true);
@@ -227,6 +235,17 @@ add(backButton);
 					
 					processPayment(frame, backend, finalTotal,
 							new UserBankInfo(name, cardNum),email);
+
+							UpdateDB dbUpdater = new UpdateDB();
+						try {
+							dbUpdater.saveTicket();
+						} catch (Exception ex) {
+							JOptionPane.showMessageDialog(frame, 
+									"Issue saving ticket to database", 
+									"Database Error", 
+									JOptionPane.ERROR_MESSAGE);
+							ex.printStackTrace();
+						}
 				} 
 				else if (vaildInfo == false) {
 					invalidInfoErrorLabel.setVisible(true);

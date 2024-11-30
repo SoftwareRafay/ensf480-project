@@ -4,6 +4,7 @@ import Entity.*;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDate;
 
@@ -102,24 +103,54 @@ public class UpdateDB {
                 preparedStatement.setDate(6, java.sql.Date.valueOf(LocalDate.now()));
                 
 
-                preparedStatement.addBatch(); // Add the current user to the batch
+                preparedStatement.addBatch(); 
             }
 
-            preparedStatement.executeBatch(); // Execute all batch updates
+            preparedStatement.executeBatch(); 
         }
 }
 
 public void removeTicketFromDatabase(int ticketId) {
-    String query = "DELETE FROM Tickets WHERE ticket_id = ?";
-    try (Connection connection = DatabaseConnection.getConnection();
-         PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+    String fetchQuery = """
+        SELECT movie_id, seat_row, seat_column, show_time 
+        FROM Tickets 
+        WHERE ticket_id = ?
+    """;
+    String deleteQuery = "DELETE FROM Tickets WHERE ticket_id = ?";
 
-        preparedStatement.setInt(1, ticketId);
-        preparedStatement.executeUpdate(); // Remove the ticket
+    try (Connection connection = DatabaseConnection.getConnection();
+         PreparedStatement fetchStmt = connection.prepareStatement(fetchQuery);
+         PreparedStatement deleteStmt = connection.prepareStatement(deleteQuery)) {
+
+        // Fetch ticket details
+        fetchStmt.setInt(1, ticketId);
+        ResultSet rs = fetchStmt.executeQuery();
+
+        if (rs.next()) {
+            int movieId = rs.getInt("movie_id");
+            int row = rs.getInt("seat_row");
+            int col = rs.getInt("seat_column");
+            int showTime = rs.getInt("show_time");
+
+            // Fetch the Showtime object
+            Showtime show = databaseController.searchShowtimeInfo(showTime);
+
+            if (show != null) {
+                // Mark the seat as available
+                Seat seat = show.getSeats()[row][col];
+                seat.setSeat_booked_or_not(false);
+            }
+        }
+
+        // Delete the ticket from the database
+        deleteStmt.setInt(1, ticketId);
+        deleteStmt.executeUpdate();
+
     } catch (SQLException e) {
         System.err.println("Error removing ticket: " + e.getMessage());
     }
 }
+
 
 public void addVoucherToDatabase(String voucherCode, double value, String userType) {
     String query = "INSERT INTO Vouchers (voucher_code, value, user_type) VALUES (?, ?, ?)";

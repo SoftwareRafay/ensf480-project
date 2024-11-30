@@ -14,7 +14,7 @@ public class TicketCart
 {
 	private Payment pay;
 	private float totalCost;
-	private Double voucher;
+	private Double voucher = 0.0;
 	private ArrayList<Reservation> items;
 
 	public TicketCart()
