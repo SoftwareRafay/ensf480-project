@@ -52,7 +52,7 @@ public class CartView extends JPanel {
 		checkoutButton.setToolTipText("Checkout");
 		checkoutButton.setForeground(Color.WHITE);
 		checkoutButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-		checkoutButton.setBackground(new Color(255, 140, 0));
+		checkoutButton.setBackground(new Color(0, 255, 0));
 		checkoutButton.setOpaque(true);
 		checkoutButton.setHorizontalAlignment(SwingConstants.CENTER);
 		

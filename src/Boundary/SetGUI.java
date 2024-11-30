@@ -48,7 +48,7 @@ public class SetGUI extends JFrame {
 	}
 
 	public void addSubmitLoginMouseClicked(MouseListener e) {
-		loginPanel.submitLoginButton.addMouseListener(e);
+		loginPanel.getSubmitLoginButton().addMouseListener(e);
 	}
 
 	public JFrame getMainFrame() {
