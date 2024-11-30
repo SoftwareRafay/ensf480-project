@@ -9,7 +9,7 @@ public class DatabaseConnection {
         
         String url = "jdbc:mysql://localhost:3306/ENSF614PROJECT";
         String user = "root";
-        String password = "Bokoz2400#";
+        String password = "123";
         return DriverManager.getConnection(url, user, password);
     }
 }
