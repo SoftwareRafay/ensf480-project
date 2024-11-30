@@ -50,7 +50,7 @@ public class CheckoutView extends JPanel {
 		titleLabel = new JLabel(
 				"YOUR TOTAL: $" + String.format("%.2f", backend.getCurrentUser().getCart().gettotalCost()));
 		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		titleLabel.setForeground(Color.BLACK);
+		titleLabel.setForeground(Color.white);
 		titleLabel.setFont(new Font("Arial", Font.PLAIN, 17));
 		titleLabel.setBounds(530, 175, 300, 30);
 		add(titleLabel);
@@ -242,9 +242,9 @@ add(backButton);
 		//Set bg image
 		JLabel registerBackground = new JLabel("");
 		registerBackground.setBounds(-2, -1, 1366, 768);
-		registerBackground.setIcon(new ImageIcon(CheckoutView.class.getResource("/bg.jpg")));
+		registerBackground.setIcon(new ImageIcon(LoginView.class.getResource("/bg2.jpg")));
+        registerBackground.setHorizontalAlignment(SwingConstants.CENTER);
 		add(registerBackground);
-
 	}
 
 	public void processPayment(JFrame frame, Login backend, double costAmount, UserBankInfo bankingInfo,String email) {
@@ -255,17 +255,11 @@ add(backButton);
 			Movie movie = backend.getCurrentUser().getCart().getitems().get(i).getmovie_to_book();
 			Showtime showtime = backend.getCurrentUser().getCart().getitems().get(i).getshowing_time();
 			Seat seat = backend.getCurrentUser().getCart().getitems().get(i).getseat_to_book();
-			ScreeningRoom screenRoom = showtime.getaudi(); 
+			 
 			showtime.bookSeat(seat.getSelected_row(), seat.getSelected_column());
 			Ticket t = new Ticket(movie, showtime, seat);
 			ticketList.add(t);
-			// try {
-			// 	update.saveTicket(t,screenRoom);
-			// } catch (Exception e) {
-			// 	JOptionPane.showMessageDialog(null, "Failed to save ticket to the database. Please contact support.",
-			// 		"Database Error", JOptionPane.ERROR_MESSAGE);
-			// }
-			
+
 			backend.getDataController().addTicket(t);
 		}
 		

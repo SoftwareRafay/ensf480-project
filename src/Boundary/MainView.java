@@ -9,7 +9,7 @@
 package Boundary;
 
 import Entity.*;
-
+import database.ReadDB;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -71,7 +71,11 @@ public class MainView extends JPanel {
 
 	private JLabel selectTheatreLabel;
 
-	JComboBox theatreSelectComboBox;
+	private JComboBox theatreSelectComboBox;
+
+	private JTextField voucherTextField;
+	private JLabel voucherButton;
+	private JLabel voucherLabel;
 
 	private JLabel selectMovieLabel;
 	private JLabel MovieLabel;
@@ -87,6 +91,8 @@ public class MainView extends JPanel {
 	private JLabel userLabel;
 	
 	private JLabel homeBackground;
+
+	
 	
 	private Movie currentMovie;
 
@@ -181,6 +187,75 @@ public class MainView extends JPanel {
 		AddToCartButton.setBackground(new Color(255, 140, 0));
 		AddToCartButton.setOpaque(true);
 		AddToCartButton.setHorizontalAlignment(SwingConstants.CENTER);
+
+		voucherLabel = new JLabel("Use a voucher");
+		voucherLabel.setHorizontalAlignment(SwingConstants.LEFT);
+		voucherLabel.setForeground(Color.WHITE);
+		voucherLabel.setFont(new Font("Arial", Font.PLAIN, 15));
+		voucherLabel.setBounds(450, 140, 254, 45);
+		add(voucherLabel);
+
+		voucherButton = new JLabel("Redeem");
+		voucherButton.setForeground(Color.WHITE);
+		voucherButton.setBackground(Color.GRAY);
+		voucherButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		voucherButton.setBackground(new Color(255, 140, 0));
+		voucherButton.setOpaque(true);
+		voucherButton.setHorizontalAlignment(SwingConstants.CENTER);
+		voucherButton.setBounds(500, 220, 80, 20);
+		add(voucherButton);
+
+		voucherTextField = new JTextField();
+		voucherTextField.setFont(new Font("Arial", Font.PLAIN, 15));
+		voucherTextField.setBorder(new MatteBorder(0, 0, 3, 0, (Color) Color.LIGHT_GRAY));
+		voucherTextField.setForeground(Color.WHITE);
+		voucherTextField.setBackground(Color.GRAY);
+		voucherTextField.setBounds(450, 180, 200, 28);
+		voucherTextField.setOpaque(true);
+		voucherTextField.setColumns(10);
+		add(voucherTextField);
+
+		voucherButton.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				String voucherCode = voucherTextField.getText();
+		
+				if (voucherCode == null || voucherCode.trim().isEmpty()) {
+					JOptionPane.showMessageDialog(frame, 
+							"Please enter a valid voucher code.", 
+							"Invalid Input", 
+							JOptionPane.ERROR_MESSAGE);
+					return;
+				}
+		
+				voucherCode = voucherCode.trim(); // Remove extra spaces
+				ReadDB dbReader = new ReadDB();
+		
+				// Get the voucher value from the database
+				Double voucherValue = dbReader.getVoucherValue(voucherCode);
+		
+				if (voucherValue != null) {
+					// Set the voucher value in the TicketCart class
+					login.getCurrentUser().getCart().setVoucherValue(voucherValue);
+		
+					// Provide feedback to the user
+					JOptionPane.showMessageDialog(frame, 
+							"Voucher verified successfully! $" + String.format("%.2f", voucherValue) 
+							+ " will be applied to your total.", 
+							"Voucher Verified", 
+							JOptionPane.INFORMATION_MESSAGE);
+				} else {
+					// Handle invalid voucher case
+					JOptionPane.showMessageDialog(frame, 
+							"The voucher code entered does not exist or is invalid.", 
+							"Invalid Voucher", 
+							JOptionPane.WARNING_MESSAGE);
+				}
+			}
+		});
+		
+
+	
 		
 		
 		AddToCartButton.addMouseListener(new MouseAdapter() {
@@ -305,16 +380,16 @@ public class MainView extends JPanel {
 		
 		selectShowtimeLabel = new JLabel("Show Times");
 		selectShowtimeLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		selectShowtimeLabel.setForeground(Color.WHITE);
+		selectShowtimeLabel.setForeground(Color.white);
 		selectShowtimeLabel.setFont(new Font("Arial", Font.PLAIN, 15));
-		selectShowtimeLabel.setBounds(900, 140, 254, 45);
+		selectShowtimeLabel.setBounds(1000, 140, 254, 45);
 		selectShowtimeLabel.setVisible(false);
 		add(selectShowtimeLabel);
 
 		showtimeDetailsLabel = new JTextArea("");
-		showtimeDetailsLabel.setForeground(Color.WHITE);
+		showtimeDetailsLabel.setForeground(Color.white);
 		showtimeDetailsLabel.setFont(new Font("Arial", Font.PLAIN, 15));
-		showtimeDetailsLabel.setBounds(900, 215, 254, 100);
+		showtimeDetailsLabel.setBounds(1000, 215, 254, 100);
 		showtimeDetailsLabel.setVisible(false);
 		showtimeDetailsLabel.setLineWrap(true);
 		showtimeDetailsLabel.setWrapStyleWord(true);
@@ -325,9 +400,9 @@ public class MainView extends JPanel {
 		showtimeSelectComboBox = new JComboBox(new String[0]);
 		showtimeSelectComboBox.setFont(new Font("Arial", Font.PLAIN, 15));
 		showtimeSelectComboBox.setBorder(new MatteBorder(0, 0, 3, 0, (Color) Color.LIGHT_GRAY));
-		showtimeSelectComboBox.setForeground(Color.WHITE);
-		showtimeSelectComboBox.setBackground(Color.GRAY);
-		showtimeSelectComboBox.setBounds(900, 180, 200, 28);
+		showtimeSelectComboBox.setForeground(Color.white);
+		showtimeSelectComboBox.setBackground(Color.gray);
+		showtimeSelectComboBox.setBounds(1000, 180, 200, 28);
 		showtimeSelectComboBox.setOpaque(true);
 		showtimeSelectComboBox.setVisible(false);
 	
@@ -371,18 +446,19 @@ public class MainView extends JPanel {
 		
 		selectTheatreLabel = new JLabel("Theatres");
 		selectTheatreLabel.setHorizontalAlignment(SwingConstants.LEFT);
-		selectTheatreLabel.setForeground(Color.WHITE);
+		selectTheatreLabel.setForeground(Color.white);
 		selectTheatreLabel.setFont(new Font("Arial", Font.PLAIN, 15));
-		selectTheatreLabel.setBounds(600, 140, 254, 45);
+		selectTheatreLabel.setBounds(700, 140, 254, 45);
 		selectTheatreLabel.setVisible(false);
 		add(selectTheatreLabel);
+
 
 		theatreSelectComboBox = new JComboBox(new String[0]);
 		theatreSelectComboBox.setFont(new Font("Arial", Font.PLAIN, 15));
 		theatreSelectComboBox.setBorder(new MatteBorder(0, 0, 3, 0, (Color) Color.LIGHT_GRAY));
-		theatreSelectComboBox.setForeground(Color.WHITE);
-		theatreSelectComboBox.setBackground(Color.GRAY);
-		theatreSelectComboBox.setBounds(600, 180, 200, 28);
+		theatreSelectComboBox.setForeground(Color.white);
+		theatreSelectComboBox.setBackground(Color.gray);
+		theatreSelectComboBox.setBounds(700, 180, 200, 28);
 		theatreSelectComboBox.setOpaque(true);
 		theatreSelectComboBox.setVisible(false);
 		
@@ -712,7 +788,8 @@ add(annualFeeButton);
 		// Set bg image
 		homeBackground = new JLabel("");
 		homeBackground.setBounds(-2, -1, 1366, 768);
-		homeBackground.setIcon(new ImageIcon(MainView.class.getResource("/bg.jpg")));
+		homeBackground.setIcon(new ImageIcon(LoginView.class.getResource("/bg2.jpg")));
+        homeBackground.setHorizontalAlignment(SwingConstants.CENTER);
 		add(homeBackground);
 	}
 

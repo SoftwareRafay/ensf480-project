@@ -27,6 +27,7 @@ public class ControlDB {
 	private ArrayList<Theatre> list_of_theatres;
 	private ArrayList<UserBankInfo> list_of_banks;
 	private ArrayList<Ticket> list_of_tickets;
+	private ArrayList<Reservation> list_of_reservations;
 	private Bank inst;
 
 	//Create all the new array lists
@@ -41,6 +42,7 @@ public class ControlDB {
 		setlist_of_banks(new ArrayList<UserBankInfo>());
 		setlist_of_pay(new ArrayList<Payment>());
 		setlist_of_receipts(new ArrayList<Receipt>());
+		setlist_of_reservations(new ArrayList<Reservation>());
 		inst = new Bank("");
 	}
 
@@ -97,6 +99,9 @@ public class ControlDB {
    public void setlist_of_receipts(ArrayList<Receipt> list_of_receipts) { this.list_of_receipts = list_of_receipts; }
 
    public ArrayList<Receipt> getlist_of_receipts() { return list_of_receipts; }
+
+   public void setlist_of_reservations(ArrayList<Reservation> list_of_reservations) {this.list_of_reservations = list_of_reservations;}
+public ArrayList<Reservation> getlist_of_reservations() { return list_of_reservations; }
 
    public void setInst(Bank inst) {this.inst = inst;}
 
@@ -249,6 +254,7 @@ public class ControlDB {
 	public void addPayment(Payment p) { this.list_of_pay.add(p);}
 
 	public void addReceipt(Receipt list_of_receipts) { this.list_of_receipts.add(list_of_receipts); }
+	public void addReservation(Reservation list_of_reservations) { this.list_of_reservations.add(list_of_reservations); }
 
 	//REMOVE FUNCTIONS
 	public void removeTicket(Ticket ticket) {list_of_tickets.remove(ticket);}

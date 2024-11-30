@@ -168,7 +168,8 @@ public class LoginView extends JPanel {
 		
 		JLabel loginBackground = new JLabel("");
 		loginBackground.setBounds(-2, -1, 1366, 768);
-		loginBackground.setIcon(new ImageIcon(LoginView.class.getResource("/bg.jpg")));
+		loginBackground.setIcon(new ImageIcon(LoginView.class.getResource("/bg2.jpg")));
+        loginBackground.setHorizontalAlignment(SwingConstants.CENTER);
 		add(loginBackground);
 	}
 

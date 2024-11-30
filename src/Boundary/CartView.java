@@ -10,8 +10,11 @@
 package Boundary;
 
 import Entity.*;
+import database.ReadDB;
+import database.UpdateDB;
 
 import javax.swing.*;
+import javax.swing.border.MatteBorder;
 
 import java.awt.event.*;
 import java.awt.Font;
@@ -40,6 +43,9 @@ public class CartView extends JPanel {
         logo.setBounds(480, 5, 480, 90);
         add(logo);
 
+	
+
+
 		JLabel cartTotalLabel = new JLabel("");
 		cartTotalLabel.setHorizontalAlignment(SwingConstants.LEFT);
 		cartTotalLabel.setForeground(Color.white);
@@ -48,7 +54,11 @@ public class CartView extends JPanel {
 		cartTotalLabel.setText("Total: $" + String.format("%.2f",backend.getCurrentUser().getCart().calculatetotalCost()));
 		add(cartTotalLabel);
 
-		
+
+
+
+
+
 		checkoutButton = new JLabel("Checkout");
 		checkoutButton.setFont(new Font("Arial", Font.PLAIN, 25));
 		checkoutButton.setBounds(1082, 679, 254, 50);
@@ -109,7 +119,7 @@ public class CartView extends JPanel {
 
 		JScrollPane scrollPane = new JScrollPane(imagePanels);
 		imagePanels.setLayout(null);
-		scrollPane.setBounds(20, 87, 1304, 560);
+		scrollPane.setBounds(20, 120, 1304, 520);
 		scrollPane.setHorizontalScrollBarPolicy(ScrollPaneConstants.HORIZONTAL_SCROLLBAR_NEVER);
 		scrollPane.setVerticalScrollBarPolicy(ScrollPaneConstants.VERTICAL_SCROLLBAR_ALWAYS);
 		scrollPane.setOpaque(false);
@@ -145,7 +155,8 @@ add(backButton);
 		// Set bg image
 		JLabel homeBackground = new JLabel("");
 		homeBackground.setBounds(-2, -1, 1366, 768);
-		homeBackground.setIcon(new ImageIcon(MainView.class.getResource("/bg.jpg")));
+		homeBackground.setIcon(new ImageIcon(LoginView.class.getResource("/bg2.jpg")));
+        homeBackground.setHorizontalAlignment(SwingConstants.CENTER);
 		add(homeBackground);
 	}
 

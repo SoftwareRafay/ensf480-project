@@ -14,6 +14,7 @@ public class TicketCart
 {
 	private Payment pay;
 	private float totalCost;
+	private Double voucher;
 	private ArrayList<Reservation> items;
 
 	public TicketCart()
@@ -78,8 +79,9 @@ public class TicketCart
 		totalCost = 0;
 		for (Reservation cartItem : items)
 		{
-			totalCost += 24.99;
+			totalCost += 25;
 		}
+		totalCost -= voucher;
 		return totalCost;
 	}
 
@@ -97,4 +99,13 @@ public class TicketCart
 
 		this.items = items;
 	}
+
+	public double getVoucherValue() {
+        return voucher;
+    }
+
+	public void setVoucherValue(Double voucher) {
+        this.voucher = voucher;
+    }
+	
 }
