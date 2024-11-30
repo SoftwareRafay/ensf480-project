@@ -10,6 +10,7 @@ package Boundary;
 
 import Entity.*;
 import database.ReadDB;
+import database.UpdateDB;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -228,24 +229,34 @@ public class MainView extends JPanel {
 					return;
 				}
 		
-				voucherCode = voucherCode.trim(); // Remove extra spaces
+				voucherCode = voucherCode.trim();
 				ReadDB dbReader = new ReadDB();
+				UpdateDB dbUpdater = new UpdateDB();
 		
 				// Get the voucher value from the database
 				Double voucherValue = dbReader.getVoucherValue(voucherCode);
 		
 				if (voucherValue != null) {
-					// Set the voucher value in the TicketCart class
+					// Set the voucher value in the user's cart
 					login.getCurrentUser().getCart().setVoucherValue(voucherValue);
 		
-					// Provide feedback to the user
-					JOptionPane.showMessageDialog(frame, 
-							"Voucher verified successfully! $" + String.format("%.2f", voucherValue) 
-							+ " will be applied to your total.", 
-							"Voucher Verified", 
-							JOptionPane.INFORMATION_MESSAGE);
+					// Remove the voucher from the database
+					try {
+						dbUpdater.removeVoucher(voucherCode);
+		
+						JOptionPane.showMessageDialog(frame, 
+								"Voucher redeemed successfully! $" + String.format("%.2f", voucherValue) 
+								+ " will be applied to your total.", 
+								"Voucher Redeemed", 
+								JOptionPane.INFORMATION_MESSAGE);
+					} catch (Exception ex) {
+						JOptionPane.showMessageDialog(frame, 
+								"Voucher redeemed, but there was an issue removing it from the database.", 
+								"Database Error", 
+								JOptionPane.ERROR_MESSAGE);
+						ex.printStackTrace();
+					}
 				} else {
-					// Handle invalid voucher case
 					JOptionPane.showMessageDialog(frame, 
 							"The voucher code entered does not exist or is invalid.", 
 							"Invalid Voucher", 
@@ -253,6 +264,7 @@ public class MainView extends JPanel {
 				}
 			}
 		});
+		
 		
 
 	
