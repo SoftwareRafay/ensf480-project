@@ -23,7 +23,6 @@ public class User
 		this.reg_or_unreg_user = type;
 	}
 
-	
 	User(int id, String type)
 	{
 		this.ID_of_User = id;

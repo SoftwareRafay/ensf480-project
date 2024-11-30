@@ -112,12 +112,6 @@ public class CancelView extends JPanel {
 		cancelButton.setBounds(630, 390, 130, 40);
 		add(cancelButton);
 
-		// Set bg image
-		JLabel registerBackground = new JLabel("");
-		registerBackground.setBounds(-2, -1, 1366, 768);
-		registerBackground.setIcon(new ImageIcon(CancelView.class.getResource("/bg.jpg")));
-		add(registerBackground);
-
 	}
 
 	private static final long serialVersionUID = 1L;

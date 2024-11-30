@@ -24,7 +24,6 @@ public class UserBankInfo
 		
 	}
 	
-	// Constructor
 	public UserBankInfo(int i, String c,  String cn) {
 		this.ID_for_bank = i;
 		if(i > counter_for_bank){
@@ -36,7 +35,6 @@ public class UserBankInfo
 		payment_card_number = cn;
 		
 	}
-
 
 	// Getters and Setters of UserBankInfo instance variables
 	public String getpayment_card_number() {

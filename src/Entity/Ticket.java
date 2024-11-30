@@ -40,7 +40,6 @@ public class Ticket
 		receipt = r;
 		
 	}
-
 	
 	// Getters and Setters
 	public Seat getSeat_select()

@@ -35,13 +35,11 @@ public class TicketCart
 			totalCost += 13.99;
 		}
 	}
-
 	
 	public void addToCart(Reservation item)
 	{
 		items.add(item);
 	}
-
 	
 	public void removeFromCart(Reservation item)
 	{
