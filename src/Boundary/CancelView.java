@@ -1,7 +1,7 @@
 /*
  * ENSF 480: Term Project - Movie App
- * 2022-12-05
- * Authors: Group 9-L01
+ * 2024-11-09
+ * Authors: Group 5-L01
  * Version: FINAL
  */
 
@@ -22,11 +22,9 @@ public class CancelView extends JPanel {
 	private JLabel cancelButton;
 	private JLabel logo;
 	
-	//Enter ticket number
 	private JTextField ticketCodeTextField;
 	private JLabel ticketNumberLabel;
 	
-	//Go back
 	private JLabel backButton;
 
 	public CancelView(JFrame frame, Login backend) {
@@ -41,13 +39,13 @@ public class CancelView extends JPanel {
 		// Back Button
 		backButton = new JLabel("Go Back");
 		backButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-backButton.setFont(new Font("Arial", Font.PLAIN, 15));
-backButton.setForeground(Color.WHITE); 
-backButton.setBounds(30, 30, 150, 50);
-backButton.setHorizontalAlignment(SwingConstants.CENTER);
-backButton.setBackground(Color.DARK_GRAY); 
-backButton.setOpaque(true);
-add(backButton);
+		backButton.setFont(new Font("Arial", Font.PLAIN, 15));
+		backButton.setForeground(Color.WHITE); 
+		backButton.setBounds(30, 30, 150, 50);
+		backButton.setHorizontalAlignment(SwingConstants.CENTER);
+		backButton.setBackground(Color.DARK_GRAY); 
+		backButton.setOpaque(true);
+		add(backButton);
 
 		//Go back to main page
 		backButton.addMouseListener(new MouseAdapter() {
@@ -100,7 +98,7 @@ add(backButton);
 				
 					if (backend.getCurrentGuestUser() != null) {
 						
-						JOptionPane.showMessageDialog(frame, " Your voucher has been emailed to you. You get a 85% refund as a Guest User. Your credit must be used within 1 year.");
+						JOptionPane.showMessageDialog(frame, "Ticket has been cancelled, 85% Refund. A confirmation email has been sent");
 					}
 
 					else{
