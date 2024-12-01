@@ -1,7 +1,7 @@
 /*
  * ENSF 480: Term Project - Movie App
- * 2022-12-05
- * Authors: Group 9-L01
+ * 2024-11-09
+ * Authors: Group 5-L01
  * Version: FINAL
  */
 
@@ -19,7 +19,7 @@ public class Showtime {
 	private int number_of_rows;
 	private int number_of_columns;
 	private Seat[][] seats;
-	private int numer_of_seats_available;
+	private int number_of_seats_available;
 	private Movie movie;
 
 	private static int showtimeCounter = 700;
@@ -44,7 +44,25 @@ public class Showtime {
 				seats[i][j] = new Seat(i, j);
 			}
 		}
-		numer_of_seats_available = number_of_rows * number_of_columns;
+		number_of_seats_available = number_of_rows * number_of_columns;
+
+		seats = new Seat[number_of_rows][number_of_columns];
+        for (int i = 0; i < number_of_rows; i++) {
+            for (int j = 0; j < number_of_columns; j++) {
+                seats[i][j] = new Seat(i, j);
+            }
+        }
+
+        // Reserve 10% of seats for registered users
+        int totalSeats = number_of_rows * number_of_columns;
+        int reservedSeats = totalSeats / 10; // 10% of seats
+        int seatsReserved = 0;
+        for (int i = 0; i < number_of_rows && seatsReserved < reservedSeats; i++) {
+            for (int j = 0; j < number_of_columns && seatsReserved < reservedSeats; j++) {
+                seats[i][j].setReservedForRegisteredUsers(true);
+                seatsReserved++;
+            }
+        }
 	}
 
 	public Showtime(Date d, ScreeningRoom a, Movie mov, int h, int m) {
@@ -62,7 +80,7 @@ public class Showtime {
 				seats[i][j] = new Seat(i, j);
 			}
 		}
-		numer_of_seats_available = number_of_rows * number_of_columns;
+		number_of_seats_available = number_of_rows * number_of_columns;
 	}
 
 	// Seat avaliability, true if taken, false if not
@@ -77,7 +95,7 @@ public class Showtime {
 	public Boolean bookSeat(int r, int c) {
 		if (seats[r][c].isSeat_booked_or_not() == false) {
 			seats[r][c].bookSeat();
-			numer_of_seats_available--;
+			number_of_seats_available--;
 			return true;
 		} else {
 			return false;
@@ -87,7 +105,7 @@ public class Showtime {
 	// Make a seat empty 
 	public void vacantSeat(int r, int c) {
 		if (seats[r][c].isSeat_booked_or_not() == true)
-			numer_of_seats_available++;
+			number_of_seats_available++;
 		seats[r][c].vacateSeat();
 	}
 
@@ -132,8 +150,8 @@ public class Showtime {
 		return this.seats;
 	}
 
-	public int getnumer_of_seats_available() {
-		return this.numer_of_seats_available;
+	public int getnumber_of_seats_available() {
+		return this.number_of_seats_available;
 	}
 
 	public int gettime_in_hours() { return time_in_hours; }
@@ -144,7 +162,7 @@ public class Showtime {
 
 	public void settime_in_minutes(int time_in_minutes) { this.time_in_minutes = time_in_minutes; }
 
-	public void setnumer_of_seats_available(int numer_of_seats_available) { this.numer_of_seats_available = numer_of_seats_available; }
+	public void setnumber_of_seats_available(int number_of_seats_available) { this.number_of_seats_available = number_of_seats_available; }
 
 	@Override
 	public String toString() {

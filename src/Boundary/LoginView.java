@@ -1,12 +1,11 @@
 /*
  * ENSF 480: Term Project - Movie App
- * 2022-12-05
- * Authors: Group 9-L01
+ * 2024-11-10
+ * Authors: Group 5-L01
  * Version: FINAL
  */
 
-
-package Boundary;
+ package Boundary;
 
 import Entity.*;
 
@@ -39,9 +38,12 @@ public class LoginView extends JPanel {
 	private JLabel registerButton;
 	private JLabel guestButton;
 
-	
-	public LoginView(JFrame frame, Login backend) {
-		setLayout(null);
+    public JLabel getSubmitLoginButton() {
+        return submitLoginButton;
+    }
+
+    public LoginView(JFrame frame, Login backend) {
+        setLayout(null);
 
 		
 		logo = new JLabel("");
@@ -49,24 +51,37 @@ public class LoginView extends JPanel {
         logo.setBounds(480, 180, 480, 90);
         add(logo);
 
-			
-		registerButton = new JLabel("SIGN UP");
+        // Colors for buttons
+        Color buttonOriginalColor = new Color(140, 255, 140);
+        Color hoverColor = Color.GREEN;
+
+        // Register Button
+        registerButton = new JLabel("SIGN UP");
         registerButton.setHorizontalAlignment(SwingConstants.CENTER);
-		registerButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        registerButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         registerButton.setForeground(Color.WHITE); // Text color white
         registerButton.setFont(new Font("Arial", Font.BOLD, 15));
-        registerButton.setBackground(new Color(255, 140, 0)); // Background color orange
+        registerButton.setBackground(buttonOriginalColor); // Background color orange
         registerButton.setOpaque(true); // Needed for background color
         registerButton.setBounds(585, 520, 200, 30);
         add(registerButton);
-		
-		
-		registerButton.addMouseListener(new MouseAdapter() {
+
+        registerButton.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 RegistrationView registerPanel = new RegistrationView(frame, backend);
                 frame.setContentPane(registerPanel);
                 frame.revalidate();
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                registerButton.setBackground(hoverColor);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                registerButton.setBackground(buttonOriginalColor);
             }
         });
 
@@ -74,9 +89,9 @@ public class LoginView extends JPanel {
         guestButton.setHorizontalAlignment(SwingConstants.CENTER);
         guestButton.setForeground(Color.WHITE); // Text color white
         guestButton.setFont(new Font("Arial", Font.BOLD, 15));
-        guestButton.setBackground(new Color(255, 140, 0)); // Background color orange
+        guestButton.setBackground(buttonOriginalColor); // Background color orange
         guestButton.setOpaque(true); // Needed for background color
-        guestButton.setBounds(585, 550, 200, 30);
+        guestButton.setBounds(585, 570, 200, 30);
         guestButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         guestButton.addMouseListener(new MouseAdapter() {
             @Override
@@ -86,13 +101,23 @@ public class LoginView extends JPanel {
                 frame.setContentPane(homePanel);
                 frame.revalidate();
             }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                guestButton.setBackground(hoverColor);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                guestButton.setBackground(buttonOriginalColor);
+            }
         });
         add(guestButton);
 
-		        // Username Text Field
-		usernameTextField = new JTextField();
+        // Username Text Field
+        usernameTextField = new JTextField();
         usernameTextField.setFont(new Font("Arial", Font.PLAIN, 13));
-        usernameTextField.setBorder(new MatteBorder(0, 0, 3, 0, (Color) Color.LIGHT_GRAY));
+        usernameTextField.setBorder(new MatteBorder(0, 0, 3, 0, Color.LIGHT_GRAY));
         usernameTextField.setForeground(Color.WHITE);
         usernameTextField.setBackground(Color.GRAY);
         usernameTextField.setBounds(564, 314, 254, 28);
@@ -100,15 +125,14 @@ public class LoginView extends JPanel {
         usernameTextField.setColumns(10);
         add(usernameTextField);
 
-		
-		// Password Field
+        // Password Field
         passwordField = new JPasswordField();
-		passwordField.setFont(new Font("Arial", Font.PLAIN, 13));
-        passwordField.setBorder(new MatteBorder(0, 0, 3, 0, (Color) Color.LIGHT_GRAY));
+        passwordField.setFont(new Font("Arial", Font.PLAIN, 13));
+        passwordField.setBorder(new MatteBorder(0, 0, 3, 0, Color.LIGHT_GRAY));
         passwordField.setForeground(Color.BLACK);
         passwordField.setBounds(564, 387, 254, 28);
-		passwordField.setBackground(Color.GRAY);
-		passwordField.setColumns(10);
+        passwordField.setBackground(Color.GRAY);
+        passwordField.setColumns(10);
         add(passwordField);
 
         // Username Label
@@ -119,9 +143,8 @@ public class LoginView extends JPanel {
         usernameLabel.setBounds(653, 299, 77, 14);
         add(usernameLabel);
 
-
-	  // Password Label
-		passwordLabel = new JLabel("Password");
+        // Password Label
+        passwordLabel = new JLabel("Password");
         passwordLabel.setHorizontalAlignment(SwingConstants.CENTER);
         passwordLabel.setForeground(Color.WHITE); // Text color set to white
         passwordLabel.setFont(new Font("Arial", Font.PLAIN, 16));
@@ -136,34 +159,44 @@ public class LoginView extends JPanel {
         invalidLoginErrorLabel.setBounds(564, 235, 254, 45);
         invalidLoginErrorLabel.setVisible(false);
         add(invalidLoginErrorLabel);
-		
-		submitLoginButton = new JLabel("Login");
+
+        // Submit Login Button
+        submitLoginButton = new JLabel("Login");
         submitLoginButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
         submitLoginButton.setHorizontalAlignment(SwingConstants.CENTER);
         submitLoginButton.setFont(new Font("Arial", Font.BOLD, 18));
         submitLoginButton.setForeground(Color.WHITE); // Text color white
-        submitLoginButton.setBackground(new Color(255, 140, 0)); // Background color orange
+        submitLoginButton.setBackground(buttonOriginalColor); // Background color orange
         submitLoginButton.setOpaque(true); // Needed for background color
         submitLoginButton.setBounds(640, 420, 100, 40);
-		
-		//Login, go to MainView ONLY IF credentials match stored values in DB
-		//Other give error message
-		submitLoginButton.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				String user = usernameTextField.getText().toLowerCase();
-				String pass = String.valueOf(passwordField.getPassword());
-				if (backend.login_verification(user, pass) != null) {
-					MainView homePanel = new MainView(frame, backend);
-					frame.setContentPane(homePanel);
-				} else {
-					invalidLoginErrorLabel.setVisible(true);
-				}
-				frame.revalidate();
-			}
-		});
-		
-		add(submitLoginButton);
+
+        // Login button mouse events
+        submitLoginButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                String user = usernameTextField.getText().toLowerCase();
+                String pass = String.valueOf(passwordField.getPassword());
+                if (backend.login_verification(user, pass) != null) {
+                    MainView homePanel = new MainView(frame, backend);
+                    frame.setContentPane(homePanel);
+                } else {
+                    invalidLoginErrorLabel.setVisible(true);
+                }
+                frame.revalidate();
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+                submitLoginButton.setBackground(hoverColor);
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+                submitLoginButton.setBackground(buttonOriginalColor);
+            }
+        });
+
+        add(submitLoginButton);
 
 		
 		JLabel loginBackground = new JLabel("");

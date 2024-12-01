@@ -1,10 +1,9 @@
 /*
  * ENSF 480: Term Project - Movie App
- * 2022-12-05
- * Authors: Group 9-L01
+ * 2024-11-09
+ * Authors: Group 5-L01
  * Version: FINAL
  */
-
 
 package Entity;
 
@@ -12,20 +11,29 @@ public class Seat {
 	private int selected_row;
 	private int selected_column;
 	private boolean seat_booked_or_not;
+	private boolean isReservedForRegisteredUsers;
 
 	public Seat(int row, int seatNum) {
 		this.selected_row = row;
 		this.selected_column = seatNum;
 		seat_booked_or_not = false;
+		isReservedForRegisteredUsers = false;
 	}
 
 	public Seat(int row, int seatNum, int booked) {
 		this.selected_row = row;
 		this.selected_column = seatNum;
 		seat_booked_or_not = true;
+		isReservedForRegisteredUsers = false;
 	}
 
+    public boolean isReservedForRegisteredUsers() {
+        return isReservedForRegisteredUsers;
+    }
 
+    public void setReservedForRegisteredUsers(boolean isReserved) {
+        this.isReservedForRegisteredUsers = isReserved;
+    }
 
 	public void bookSeat() {
 		seat_booked_or_not = true;

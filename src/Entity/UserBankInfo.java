@@ -1,10 +1,9 @@
 /*
  * ENSF 480: Term Project - Movie App
- * 2022-12-05
- * Authors: Group 9-L01
+ * 2024-11-09
+ * Authors: Group 5-L01
  * Version: FINAL
  */
-
 
 package Entity;
 
@@ -25,7 +24,6 @@ public class UserBankInfo
 		
 	}
 	
-	// Constructor
 	public UserBankInfo(int i, String c,  String cn) {
 		this.ID_for_bank = i;
 		if(i > counter_for_bank){
@@ -37,7 +35,6 @@ public class UserBankInfo
 		payment_card_number = cn;
 		
 	}
-
 
 	// Getters and Setters of UserBankInfo instance variables
 	public String getpayment_card_number() {

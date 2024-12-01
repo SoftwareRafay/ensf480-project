@@ -1,10 +1,9 @@
 /*
  * ENSF 480: Term Project - Movie App
- * 2022-12-05
- * Authors: Group 9-L01
+ * 2024-11-09
+ * Authors: Group 5-L01
  * Version: FINAL
  */
-
 
 package Entity;
 
@@ -41,7 +40,6 @@ public class Ticket
 		receipt = r;
 		
 	}
-
 	
 	// Getters and Setters
 	public Seat getSeat_select()

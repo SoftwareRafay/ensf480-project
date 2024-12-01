@@ -1,3 +1,5 @@
+//Group 5
+
 package Control;
 import java.util.Properties;
 import javax.mail.*;
