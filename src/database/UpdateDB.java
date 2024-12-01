@@ -89,26 +89,30 @@ public class UpdateDB {
         }
     }
 
-    public void saveTicket() throws SQLException {
-    String sql = "INSERT INTO Tickets (ticket_id, movie_id, seat_row, seat_column, show_time, booking_date) VALUES ( ?, ?, ?, ?, ?, ?)";
-    try (Connection connection = DatabaseConnection.getConnection();
+    public void saveTicket() {
+        String sql = "INSERT INTO Tickets (ticket_id, movie_id, seat_row, seat_column, show_time, booking_date) VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection connection = DatabaseConnection.getConnection();
              PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
-
-            for (Ticket r : databaseController.getlist_of_tickets()) {
-                preparedStatement.setInt(1, r.getID_of_ticket());
-                preparedStatement.setInt(2, r.getmovie().getID_of_movie());
-                preparedStatement.setInt(3, r.getSeat_select().getSelected_row());
-                preparedStatement.setInt(4, r.getSeat_select().getSelected_column());
-                preparedStatement.setInt(5, r.getShowtime().getID_for_showtime());
+    
+            for (Ticket ticket : databaseController.getlist_of_tickets()) {
+                preparedStatement.setInt(1, ticket.getID_of_ticket());
+                preparedStatement.setInt(2, ticket.getmovie().getID_of_movie());
+                preparedStatement.setInt(3, ticket.getSeat_select().getSelected_row());
+                preparedStatement.setInt(4, ticket.getSeat_select().getSelected_column());
+                preparedStatement.setInt(5, ticket.getShowtime().getID_for_showtime());
                 preparedStatement.setDate(6, java.sql.Date.valueOf(LocalDate.now()));
-                
-
+    
                 preparedStatement.addBatch(); 
             }
-
+    
             preparedStatement.executeBatch(); 
+        } catch (SQLException e) {
+           
+            e.printStackTrace();
+            throw new RuntimeException("Error while saving tickets to the database.", e);
         }
-}
+    }
+    
 
 public void removeTicketFromDatabase(int ticketId) {
     String fetchQuery = """

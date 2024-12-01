@@ -7,14 +7,17 @@
 package Boundary;
 
 import Entity.*;
+import database.UpdateDB;
 
 import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.sql.SQLException;
 import java.awt.Color;
 import java.awt.Cursor;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
@@ -222,10 +225,22 @@ add(registerButton);
 
 				// Checking username: make sure it doesn't already exist
 				if (!backend.check_if_user_is_existing(user)) {
+					UpdateDB dbUpdater = new UpdateDB();
 					
 						if (name.length == 2) {							
 							if(backend.getDataController().getInst().CardInfo_verification(fullname, cardNum)) {
 								backend.user_registration(user, pass, name[0], name[1], email, fullname,  cardNum);
+
+  try {
+                        
+                        dbUpdater.writeRegisteredUser();
+                    } catch (SQLException ex) {
+                        ex.printStackTrace();
+                        
+                        JOptionPane.showMessageDialog(frame, "Error saving user information. Please try again.", "Database Error", JOptionPane.ERROR_MESSAGE);
+                        return;
+                    }
+
 								LoginView loginPanel = new LoginView(frame, backend);
 								frame.setContentPane(loginPanel);
 							}

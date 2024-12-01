@@ -237,15 +237,8 @@
 							 new UserBankInfo(name, cardNum),email);
  
 							 UpdateDB dbUpdater = new UpdateDB();
-						 try {
 							 dbUpdater.saveTicket();
-						 } catch (Exception ex) {
-							 JOptionPane.showMessageDialog(frame, 
-									 "Issue saving ticket to database", 
-									 "Database Error", 
-									 JOptionPane.ERROR_MESSAGE);
-							 ex.printStackTrace();
-						 }
+
 				 } 
 				 else if (vaildInfo == false) {
 					 invalidInfoErrorLabel.setVisible(true);
