@@ -93,7 +93,8 @@ public class MainView extends JPanel {
         // Initialize seatPanel
         seatPanel = new JPanel();
         seatPanel.setLayout(null);
-        seatPanel.setBounds(600, 250, 600, 500); // Adjust size and position as needed
+        seatPanel.setBounds(600, 250, 600, 500);
+        //Added this for seat visibility
         seatPanel.setBackground(new Color(20, 20, 20)); // Very dark gray color
         seatPanel.setVisible(false); // Initially hidden
         add(seatPanel);
@@ -196,7 +197,8 @@ public class MainView extends JPanel {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if ((login.getCurrentUser().getreg_or_unreg_user().compareTo("Registered") == 0
-                        && login.getCurrentRegisteredUser().isFeePayed()) || login.getCurrentUser().getreg_or_unreg_user().compareTo("Guest") == 0) {
+                        && login.getCurrentRegisteredUser().isFeePayed())
+                        || login.getCurrentUser().getreg_or_unreg_user().compareTo("Guest") == 0) {
                     try {
                         // Parse the row input as a letter and convert it to an index
                         String rowInput = rowTextField.getText().toUpperCase();
@@ -205,22 +207,29 @@ public class MainView extends JPanel {
                             return;
                         }
                         int userRow = rowInput.charAt(0) - 'A';
-
+        
                         // Parse the column input and adjust for 1-based indexing
                         int userCol = Integer.parseInt(colTextField.getText()) - 1;
-
+        
                         invalidSeatErrorLabel.setVisible(false);
                         takenSeatErrorLabel.setVisible(false);
                         addedToCartLabel.setVisible(false);
                         selectedSeatErrorLabel.setVisible(false);
-
+        
                         // Validate userRow and userCol
                         if (userRow >= 0 && userRow < currentShowtime.getnumber_of_rows()
                                 && userCol >= 0 && userCol < currentShowtime.getnumber_of_columns()) {
-                            boolean available = currentShowtime.getSeatAvaliability(userRow, userCol);
-                            if (!available) {
+                            boolean seatBooked = currentShowtime.getSeatAvaliability(userRow, userCol);
+                            if (!seatBooked) {
+                                // Seat is available
+                                Seat seat = currentShowtime.getSeats()[userRow][userCol];
+                                if (seat.isReservedForRegisteredUsers() && login.getCurrentUser().getreg_or_unreg_user().compareTo("Guest") == 0) {
+                                    JOptionPane.showMessageDialog(frame, "This seat is reserved for registered users.",
+                                            "Seat Selection Error", JOptionPane.ERROR_MESSAGE);
+                                    return;
+                                }
+        
                                 boolean selectFlag = false;
-
                                 for (int k = 0; k < login.getCurrentUser().getCart().getitems().size(); k++) {
                                     if (login.getCurrentUser().getCart().getitems().get(k).getseat_to_book()
                                             .getSelected_row() == userRow
@@ -231,34 +240,17 @@ public class MainView extends JPanel {
                                                     .getID_for_showtime() == currentShowtime.getID_for_showtime()) {
                                         selectedSeatErrorLabel.setVisible(true);
                                         selectFlag = true;
+                                        break;
                                     }
                                 }
                                 if (!selectFlag) {
-                                    if (currentShowtime.getMovie().getMovieAnnouncement().isPrivate()) {
-                                        int numSelectedSeats = 0;
-                                        for (int i = 0; i < login.getCurrentUser().getCart().getitems()
-                                                .size(); i++) {
-                                            if (currentMovie.gettitle_of_movie().compareTo(login.getCurrentUser().getCart()
-                                                    .getitems().get(i).getmovie_to_book().gettitle_of_movie()) == 0) {
-                                                numSelectedSeats++;
-                                            }
-                                        }
-                                        if ((currentShowtime.getnumer_of_seats_available()
-                                                - (numSelectedSeats + 1) > (currentShowtime.getnumber_of_rows()
-                                                        * currentShowtime.getnumber_of_columns() * 0.9))) {
-                                            login.getCurrentUser().getCart().addToCart(new Reservation(currentMovie,
-                                                    currentShowtime, currentShowtime.getSeats()[userRow][userCol]));
-                                            addedToCartLabel.setVisible(true);
-                                            createSeatGraphic(frame, login);
-                                        }
-                                    } else {
-                                        login.getCurrentUser().getCart().addToCart(new Reservation(currentMovie,
-                                                currentShowtime, currentShowtime.getSeats()[userRow][userCol]));
-                                        addedToCartLabel.setVisible(true);
-                                        createSeatGraphic(frame, login);
-                                    }
+                                    login.getCurrentUser().getCart().addToCart(new Reservation(currentMovie,
+                                            currentShowtime, seat));
+                                    addedToCartLabel.setVisible(true);
+                                    createSeatGraphic(frame, login);
                                 }
                             } else {
+                                // Seat is already booked
                                 takenSeatErrorLabel.setVisible(true);
                             }
                         } else {
@@ -275,6 +267,7 @@ public class MainView extends JPanel {
                 }
             }
         });
+        
 
         SeatLabel = new JLabel("________________________________");
         SeatLabel.setHorizontalAlignment(SwingConstants.LEFT);
@@ -792,30 +785,36 @@ public class MainView extends JPanel {
                     char rowLetter = (char) ('A' + i); // Convert row index to letter
                     tempGraphic.append(rowLetter).append("  | ");
                 }
-                if (currentShowtime.getSeatAvaliability(i, j)) {
+                Seat seat = currentShowtime.getSeats()[i][j];
+    
+                if (seat.isSeat_booked_or_not()) {
                     tempGraphic.append("X  ");
-                } else if (login.getCurrentUser() != null) {
-                    boolean tempFlag = false;
-                    for (int k = 0; k < login.getCurrentUser().getCart().getitems().size(); k++) {
-                        if (login.getCurrentUser().getCart().getitems().get(k).getseat_to_book().getSelected_row() == i
-                                && login.getCurrentUser().getCart().getitems().get(k).getseat_to_book()
-                                        .getSelected_column() == j
-                                && login.getCurrentUser().getCart().getitems().get(k).getshowing_time()
-                                        .getID_for_showtime() == currentShowtime.getID_for_showtime()) {
-                            tempGraphic.append("/  ");
-                            tempFlag = true;
+                } else {
+                    boolean isSeatInCart = false;
+                    for (Reservation res : login.getCurrentUser().getCart().getitems()) {
+                        if (res.getseat_to_book().getSelected_row() == i
+                                && res.getseat_to_book().getSelected_column() == j
+                                && res.getshowing_time().getID_for_showtime() == currentShowtime.getID_for_showtime()) {
+                            isSeatInCart = true;
+                            break;
                         }
                     }
-                    if (!tempFlag) {
+                    if (isSeatInCart) {
+                        tempGraphic.append("/  ");
+                    } else if (seat.isReservedForRegisteredUsers()) {
+                        if (login.getCurrentUser().getreg_or_unreg_user().equals("Registered")) {
+                            tempGraphic.append("o  ");
+                        } else {
+                            tempGraphic.append("R  ");
+                        }
+                    } else {
                         tempGraphic.append("o  ");
                     }
-                } else {
-                    tempGraphic.append("o  ");
                 }
             }
             tempGraphic.append("\n");
         }
-        tempGraphic.append("o = Free, / = Selected, X = Taken");
+        tempGraphic.append("o = Free, / = Selected, X = Taken, R = Reserved for Registered Users");
         seatGraphicLabel.setText(tempGraphic.toString());
         seatGraphicLabel.setVisible(true);
     }
