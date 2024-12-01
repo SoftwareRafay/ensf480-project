@@ -4,7 +4,8 @@
  * Authors: Group 5-L01
  * Version: FINAL
  */
-package Boundary;
+
+ package Boundary;
 
 import Entity.*;
 
@@ -22,21 +23,20 @@ import java.awt.Cursor;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
+
 public class LoginView extends JPanel {
 
-    private static final long serialVersionUID = 1L;
-
-    private JLabel logo;
-
-    private JTextField usernameTextField;
-    private JLabel usernameLabel;
-
-    private JPasswordField passwordField;
-    private JLabel passwordLabel;
-
-    private JLabel submitLoginButton;
-    private JLabel registerButton;
-    private JLabel guestButton;
+	private JLabel logo;
+		
+	private JTextField usernameTextField;
+	private JLabel usernameLabel;
+	
+	private JPasswordField passwordField;
+	private JLabel passwordLabel;
+	
+	JLabel submitLoginButton;
+	private JLabel registerButton;
+	private JLabel guestButton;
 
     public JLabel getSubmitLoginButton() {
         return submitLoginButton;
@@ -45,8 +45,8 @@ public class LoginView extends JPanel {
     public LoginView(JFrame frame, Login backend) {
         setLayout(null);
 
-        // Logo
-        logo = new JLabel("");
+		
+		logo = new JLabel("");
         logo.setIcon(new ImageIcon(LoginView.class.getResource("/logo.png")));
         logo.setBounds(480, 180, 480, 90);
         add(logo);
@@ -85,8 +85,7 @@ public class LoginView extends JPanel {
             }
         });
 
-        // Guest Button
-        guestButton = new JLabel("PROCEED AS GUEST");
+		guestButton = new JLabel("PROCEED AS GUEST");
         guestButton.setHorizontalAlignment(SwingConstants.CENTER);
         guestButton.setForeground(Color.WHITE); // Text color white
         guestButton.setFont(new Font("Arial", Font.BOLD, 15));
@@ -199,10 +198,13 @@ public class LoginView extends JPanel {
 
         add(submitLoginButton);
 
-        // Background Image
-        JLabel loginBackground = new JLabel("");
-        loginBackground.setBounds(-2, -1, 1366, 768);
-        loginBackground.setIcon(new ImageIcon(LoginView.class.getResource("/bg.jpg")));
-        add(loginBackground);
-    }
+		
+		JLabel loginBackground = new JLabel("");
+		loginBackground.setBounds(-2, -1, 1366, 768);
+		loginBackground.setIcon(new ImageIcon(LoginView.class.getResource("/bg2.jpg")));
+        loginBackground.setHorizontalAlignment(SwingConstants.CENTER);
+		add(loginBackground);
+	}
+
+	private static final long serialVersionUID = 1L;
 }

@@ -9,6 +9,7 @@ package Boundary;
 import Entity.*;
 import Control.*;
 import database.*;
+import database.UpdateDB;
 
 import javax.swing.*;
 import javax.swing.border.MatteBorder;
@@ -48,7 +49,7 @@ public class CheckoutView extends JPanel {
 		titleLabel = new JLabel(
 				"YOUR TOTAL: $" + String.format("%.2f", backend.getCurrentUser().getCart().gettotalCost()));
 		titleLabel.setHorizontalAlignment(SwingConstants.CENTER);
-		titleLabel.setForeground(Color.BLACK);
+		titleLabel.setForeground(Color.white);
 		titleLabel.setFont(new Font("Arial", Font.PLAIN, 17));
 		titleLabel.setBounds(530, 175, 300, 30);
 		add(titleLabel);
@@ -153,36 +154,43 @@ add(backButton);
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				boolean infoValid;
-			
+		
 				if (backend.getCurrentRegisteredUser() != null) {
 					String name = backend.getCurrentRegisteredUser().getBankInfo().getName_of_the_customer();
-
 					String cardNum = backend.getCurrentRegisteredUser().getBankInfo().getpayment_card_number();
 					String email = backend.getCurrentRegisteredUser().getgmail_of_user();
-					
+		
 					invalidInfoErrorLabel.setVisible(false);
-					
-
+		
 					if (backend.getDataController().getInst().CardInfo_verification(name, cardNum)) {
 						infoValid = true;
-					} 
-					else {
+					} else {
 						infoValid = false;
 					}
-					
+		
 					if (infoValid) {
 						double finalTotal = backend.getCurrentUser().getCart().gettotalCost();
-						processPayment(frame, backend, finalTotal, backend.getCurrentRegisteredUser().getBankInfo(),email);
+						processPayment(frame, backend, finalTotal, backend.getCurrentRegisteredUser().getBankInfo(), email);
+		
+						UpdateDB dbUpdater = new UpdateDB();
+						try {
+							dbUpdater.saveTicket();
+						} catch (Exception ex) {
+							JOptionPane.showMessageDialog(frame, 
+									"Issue saving ticket to database", 
+									"Database Error", 
+									JOptionPane.ERROR_MESSAGE);
+							ex.printStackTrace();
 						}
-						else  {
-							invalidInfoErrorLabel.setVisible(true);
-						} 
-						
-					} 
-					
+					} else {
+						invalidInfoErrorLabel.setVisible(true);
+					}
+				}
+		
 				frame.revalidate();
 			}
 		});
+		
 		
 		if (backend.getCurrentRegisteredUser() != null) {
 			userStoredBankingButton.setVisible(true);
@@ -225,6 +233,17 @@ add(backButton);
 					
 					processPayment(frame, backend, finalTotal,
 							new UserBankInfo(name, cardNum),email);
+
+							UpdateDB dbUpdater = new UpdateDB();
+						try {
+							dbUpdater.saveTicket();
+						} catch (Exception ex) {
+							JOptionPane.showMessageDialog(frame, 
+									"Issue saving ticket to database", 
+									"Database Error", 
+									JOptionPane.ERROR_MESSAGE);
+							ex.printStackTrace();
+						}
 				} 
 				else if (vaildInfo == false) {
 					invalidInfoErrorLabel.setVisible(true);
@@ -240,9 +259,9 @@ add(backButton);
 		//Set bg image
 		JLabel registerBackground = new JLabel("");
 		registerBackground.setBounds(-2, -1, 1366, 768);
-		registerBackground.setIcon(new ImageIcon(CheckoutView.class.getResource("/bg.jpg")));
+		registerBackground.setIcon(new ImageIcon(LoginView.class.getResource("/bg2.jpg")));
+        registerBackground.setHorizontalAlignment(SwingConstants.CENTER);
 		add(registerBackground);
-
 	}
 
 	public void processPayment(JFrame frame, Login backend, double costAmount, UserBankInfo bankingInfo,String email) {
@@ -253,17 +272,11 @@ add(backButton);
 			Movie movie = backend.getCurrentUser().getCart().getitems().get(i).getmovie_to_book();
 			Showtime showtime = backend.getCurrentUser().getCart().getitems().get(i).getshowing_time();
 			Seat seat = backend.getCurrentUser().getCart().getitems().get(i).getseat_to_book();
-			ScreeningRoom screenRoom = showtime.getaudi(); 
+			 
 			showtime.bookSeat(seat.getSelected_row(), seat.getSelected_column());
 			Ticket t = new Ticket(movie, showtime, seat);
 			ticketList.add(t);
-			// try {
-			// 	update.saveTicket(t,screenRoom);
-			// } catch (Exception e) {
-			// 	JOptionPane.showMessageDialog(null, "Failed to save ticket to the database. Please contact support.",
-			// 		"Database Error", JOptionPane.ERROR_MESSAGE);
-			// }
-			
+
 			backend.getDataController().addTicket(t);
 		}
 		

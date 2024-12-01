@@ -8,6 +8,9 @@
 package Boundary;
 
 import Entity.*;
+import database.ReadDB;
+import database.UpdateDB;
+import Control.VoucherGenerator;
 
 import javax.swing.*;
 import java.awt.*;
@@ -90,27 +93,69 @@ public class CancelView extends JPanel {
 		cancelButton.setBackground(new Color(255, 140, 0));
 		cancelButton.setOpaque(true);
 		cancelButton.setHorizontalAlignment(SwingConstants.CENTER);
+		cancelButton.setBounds(630, 390, 130, 40);
+		add(cancelButton);
 		
 		
 		cancelButton.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+<<<<<<< HEAD
 				
 					if (backend.getCurrentGuestUser() != null) {
 						
 						JOptionPane.showMessageDialog(frame, "Ticket has been cancelled, 85% Refund. A confirmation email has been sent");
+=======
+				try {
+					int ticketId = Integer.parseInt(ticketCodeTextField.getText().trim());
+					ReadDB dbReader = new ReadDB(); 
+					UpdateDB dbUpdater = new UpdateDB();
+		
+					if (dbReader.isTicketExists(ticketId)) { 
+						dbUpdater.removeTicketFromDatabase(ticketId); 
+		
+						// Generate a random voucher
+						String voucherCode = VoucherGenerator.generateVoucherCode();
+						double voucherValue = (backend.getCurrentGuestUser() != null) ? 21.25 : 25.00;
+						String userType = (backend.getCurrentGuestUser() != null) ? "Guest" : "Registered";
+		
+						// Add voucher to database
+						dbUpdater.addVoucherToDatabase(voucherCode, voucherValue, userType);
+		
+						// Show message
+						JOptionPane.showMessageDialog(frame, 
+							"Your ticket is cancelled. " +
+							(backend.getCurrentGuestUser() != null 
+								? "Your voucher code is: " + voucherCode + " (Value: $21.25). Use within 1 year."
+								: "Your voucher code is: " + voucherCode + " (Value: $25.00). Use within 1 year.")
+						);
+					} else {
+						JOptionPane.showMessageDialog(frame, 
+													  "The ticket number entered does not exist.", 
+													  "Invalid Ticket", JOptionPane.WARNING_MESSAGE);
+>>>>>>> origin/main
 					}
-
-					else{
-						
-						JOptionPane.showMessageDialog(frame, "Your ticket is cancelled. You will recieve 100% refund. A confirmation has been emailed to you.");
-					}
-							
-				frame.validate();
+		
+				} catch (NumberFormatException ex) {
+					JOptionPane.showMessageDialog(frame, 
+												  "Please enter a valid ticket number.", 
+												  "Invalid Input", JOptionPane.ERROR_MESSAGE);
+				}
+				frame.revalidate();
 			}
 		});
+<<<<<<< HEAD
 		cancelButton.setBounds(630, 390, 130, 40);
 		add(cancelButton);
+=======
+		
+		// Set bg image
+		JLabel registerBackground = new JLabel("");
+		registerBackground.setBounds(-2, -1, 1366, 768);
+		registerBackground.setIcon(new ImageIcon(LoginView.class.getResource("/bg2.jpg")));
+        registerBackground.setHorizontalAlignment(SwingConstants.CENTER);
+		add(registerBackground);
+>>>>>>> origin/main
 
 	}
 

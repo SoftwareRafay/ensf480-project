@@ -159,9 +159,9 @@ add(cardNumberLabel);
 	
 		JLabel invalidUsernameErrorLabel = new JLabel("<html>"
 				+ "The username you have entered already exists." + "</html>");
-				invalidUsernameErrorLabel.setBounds(565, 236, 254, 45);
+				invalidUsernameErrorLabel.setBounds(565, 200, 254, 45);
 				invalidUsernameErrorLabel.setHorizontalAlignment(SwingConstants.LEFT);
-				invalidUsernameErrorLabel.setForeground(Color.RED); // Error color red
+				invalidUsernameErrorLabel.setForeground(Color.white); // Error color red
 				invalidUsernameErrorLabel.setFont(new Font("Arial", Font.PLAIN, 15));
 				add(invalidUsernameErrorLabel);
 				
@@ -169,9 +169,9 @@ add(cardNumberLabel);
 		
 		JLabel invalidCardErrorLabel = new JLabel("<html>"
 				+ "Card information was declined by bank."+ "</html>");
-				invalidCardErrorLabel.setBounds(565, 236, 254, 45);
+				invalidCardErrorLabel.setBounds(565, 200, 254, 45);
 				invalidCardErrorLabel.setHorizontalAlignment(SwingConstants.LEFT);
-				invalidCardErrorLabel.setForeground(Color.RED); // Error color red
+				invalidCardErrorLabel.setForeground(Color.white); // Error color red
 				invalidCardErrorLabel.setFont(new Font("Arial", Font.PLAIN, 15));
 				invalidCardErrorLabel.setVisible(false);
 				add(invalidCardErrorLabel);
@@ -179,9 +179,9 @@ add(cardNumberLabel);
 		
 		JLabel invalidNameErrorLabel = new JLabel(
 				"<html>" + "Please enter your first AND last name." + "</html>");
-				invalidNameErrorLabel.setBounds(565, 236, 254, 45);
+				invalidNameErrorLabel.setBounds(565, 200, 254, 45);
 				invalidNameErrorLabel.setHorizontalAlignment(SwingConstants.LEFT);
-				invalidNameErrorLabel.setForeground(Color.RED); // Error color red
+				invalidNameErrorLabel.setForeground(Color.white); // Error color red
 				invalidNameErrorLabel.setFont(new Font("Arial", Font.PLAIN, 15));
 				invalidNameErrorLabel.setVisible(false);
 				invalidUsernameErrorLabel.setVisible(false);
@@ -247,8 +247,8 @@ add(registerButton);
 		// set bg image
 		JLabel registerBackground = new JLabel("");
 		registerBackground.setBounds(-2, -1, 1366, 768);
-		registerBackground.setIcon(new ImageIcon(RegistrationView.class.getResource("/bg.jpg")));
+		registerBackground.setIcon(new ImageIcon(LoginView.class.getResource("/bg2.jpg")));
+        registerBackground.setHorizontalAlignment(SwingConstants.CENTER);
 		add(registerBackground);
-
 	}
 }

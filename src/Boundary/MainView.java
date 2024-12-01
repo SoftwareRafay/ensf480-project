@@ -4,9 +4,12 @@
  * Authors: Group 5-L01
  * Version: FINAL
  */
-package Boundary;
+
+ package Boundary;
 
 import Entity.*;
+import database.ReadDB;
+import database.UpdateDB;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -21,8 +24,6 @@ import javax.swing.*;
 import javax.swing.border.MatteBorder;
 
 public class MainView extends JPanel {
-
-    private static final long serialVersionUID = 1L;
 
     private JLabel logoutButton;
     private JLabel logo;
@@ -49,27 +50,37 @@ public class MainView extends JPanel {
 
     private JLabel selectShowtimeLabel;
     private JTextArea showtimeDetailsLabel;
-    private JComboBox<String> showtimeSelectComboBox;
+    private JComboBox showtimeSelectComboBox;
 
     private JLabel selectTheatreLabel;
-    private JComboBox<String> theatreSelectComboBox;
+    private JComboBox theatreSelectComboBox;
+
+    private JTextField voucherTextField;
+    private JLabel voucherButton;
+    private JLabel voucherLabel;
 
     private JLabel selectMovieLabel;
     private JLabel MovieLabel;
+
     private JTextArea movieDetailsLabel;
+
     private JTextArea movieSynopsisLabel;
+
     private JLabel posterCard;
-    private JComboBox<String> movieSelectComboBox;
+
+    private JComboBox movieSelectComboBox;
 
     private JLabel userLabel;
+
     private JLabel homeBackground;
 
-    private Movie currentMovie;
-    private Theatre currentTheatre;
-    private Showtime currentShowtime;
-
-    // New seat panel for dark gray background
     private JPanel seatPanel;
+
+    private Movie currentMovie;
+
+    private Theatre currentTheatre;
+
+    private Showtime currentShowtime;
 
     public MainView(JFrame frame, Login login) {
         setLayout(null);
@@ -90,7 +101,7 @@ public class MainView extends JPanel {
         // Row Text Field
         rowTextField = new JTextField();
         rowTextField.setFont(new Font("Arial", Font.PLAIN, 15));
-        rowTextField.setBorder(new MatteBorder(0, 0, 3, 0, Color.LIGHT_GRAY));
+        rowTextField.setBorder(new MatteBorder(0, 0, 3, 0, (Color) Color.LIGHT_GRAY));
         rowTextField.setForeground(Color.WHITE);
         rowTextField.setBackground(Color.GRAY);
         rowTextField.setBounds(400, 110, 50, 28);
@@ -110,7 +121,7 @@ public class MainView extends JPanel {
         // Column Text Field
         colTextField = new JTextField();
         colTextField.setFont(new Font("Arial", Font.PLAIN, 15));
-        colTextField.setBorder(new MatteBorder(0, 0, 3, 0, Color.LIGHT_GRAY));
+        colTextField.setBorder(new MatteBorder(0, 0, 3, 0, (Color) Color.LIGHT_GRAY));
         colTextField.setForeground(Color.WHITE);
         colTextField.setBackground(Color.GRAY);
         colTextField.setBounds(400, 190, 50, 28);
@@ -131,7 +142,7 @@ public class MainView extends JPanel {
         invalidSeatErrorLabel.setHorizontalAlignment(SwingConstants.LEFT);
         invalidSeatErrorLabel.setForeground(Color.RED);
         invalidSeatErrorLabel.setFont(new Font("Arial", Font.PLAIN, 15));
-        invalidSeatErrorLabel.setBounds(400, 290, 192, 45);
+        invalidSeatErrorLabel.setBounds(400, 290, 250, 45);
         invalidSeatErrorLabel.setVisible(false);
         seatPanel.add(invalidSeatErrorLabel);
 
@@ -139,7 +150,7 @@ public class MainView extends JPanel {
         selectedSeatErrorLabel.setHorizontalAlignment(SwingConstants.LEFT);
         selectedSeatErrorLabel.setForeground(Color.RED);
         selectedSeatErrorLabel.setFont(new Font("Arial", Font.PLAIN, 15));
-        selectedSeatErrorLabel.setBounds(400, 340, 192, 45);
+        selectedSeatErrorLabel.setBounds(400, 340, 250, 45);
         selectedSeatErrorLabel.setVisible(false);
         seatPanel.add(selectedSeatErrorLabel);
 
@@ -147,7 +158,7 @@ public class MainView extends JPanel {
         takenSeatErrorLabel.setHorizontalAlignment(SwingConstants.LEFT);
         takenSeatErrorLabel.setForeground(Color.RED);
         takenSeatErrorLabel.setFont(new Font("Arial", Font.PLAIN, 15));
-        takenSeatErrorLabel.setBounds(400, 390, 192, 45);
+        takenSeatErrorLabel.setBounds(400, 390, 250, 45);
         takenSeatErrorLabel.setVisible(false);
         seatPanel.add(takenSeatErrorLabel);
 
@@ -172,8 +183,9 @@ public class MainView extends JPanel {
 
         AddToCartButton = new JLabel("Add To Cart");
         AddToCartButton.setForeground(Color.WHITE);
-        AddToCartButton.setBackground(new Color(255, 140, 0));
+        AddToCartButton.setBackground(Color.GRAY);
         AddToCartButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        AddToCartButton.setBackground(new Color(255, 140, 0));
         AddToCartButton.setOpaque(true);
         AddToCartButton.setHorizontalAlignment(SwingConstants.CENTER);
         AddToCartButton.setBounds(400, 230, 100, 50);
@@ -188,6 +200,10 @@ public class MainView extends JPanel {
                     try {
                         // Parse the row input as a letter and convert it to an index
                         String rowInput = rowTextField.getText().toUpperCase();
+                        if (rowInput.length() != 1 || rowInput.charAt(0) < 'A' || rowInput.charAt(0) > 'Z') {
+                            invalidSeatErrorLabel.setVisible(true);
+                            return;
+                        }
                         int userRow = rowInput.charAt(0) - 'A';
 
                         // Parse the column input and adjust for 1-based indexing
@@ -250,6 +266,7 @@ public class MainView extends JPanel {
                         }
                         frame.revalidate();
                     } catch (NumberFormatException f) {
+                        invalidSeatErrorLabel.setVisible(true);
                         System.out.println(f);
                     }
                 } else {
@@ -275,19 +292,95 @@ public class MainView extends JPanel {
         selectSeatLabel.setVisible(false);
         seatPanel.add(selectSeatLabel);
 
-        // Showtime Components
+        // Voucher components from the first code
+        voucherLabel = new JLabel("Use a voucher");
+        voucherLabel.setHorizontalAlignment(SwingConstants.LEFT);
+        voucherLabel.setForeground(Color.WHITE);
+        voucherLabel.setFont(new Font("Arial", Font.PLAIN, 15));
+        voucherLabel.setBounds(450, 140, 254, 45);
+        add(voucherLabel);
+
+        voucherButton = new JLabel("Redeem");
+        voucherButton.setForeground(Color.WHITE);
+        voucherButton.setBackground(Color.GRAY);
+        voucherButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+        voucherButton.setBackground(new Color(255, 140, 0));
+        voucherButton.setOpaque(true);
+        voucherButton.setHorizontalAlignment(SwingConstants.CENTER);
+        voucherButton.setBounds(500, 220, 80, 20);
+        add(voucherButton);
+
+        voucherTextField = new JTextField();
+        voucherTextField.setFont(new Font("Arial", Font.PLAIN, 15));
+        voucherTextField.setBorder(new MatteBorder(0, 0, 3, 0, (Color) Color.LIGHT_GRAY));
+        voucherTextField.setForeground(Color.WHITE);
+        voucherTextField.setBackground(Color.GRAY);
+        voucherTextField.setBounds(450, 180, 200, 28);
+        voucherTextField.setOpaque(true);
+        voucherTextField.setColumns(10);
+        add(voucherTextField);
+
+        voucherButton.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                String voucherCode = voucherTextField.getText();
+
+                if (voucherCode == null || voucherCode.trim().isEmpty()) {
+                    JOptionPane.showMessageDialog(frame,
+                            "Please enter a valid voucher code.",
+                            "Invalid Input",
+                            JOptionPane.ERROR_MESSAGE);
+                    return;
+                }
+
+                voucherCode = voucherCode.trim();
+                ReadDB dbReader = new ReadDB();
+                UpdateDB dbUpdater = new UpdateDB();
+
+                // Get the voucher value from the database
+                Double voucherValue = dbReader.getVoucherValue(voucherCode);
+
+                if (voucherValue != null) {
+                    // Set the voucher value in the user's cart
+                    login.getCurrentUser().getCart().setVoucherValue(voucherValue);
+
+                    // Remove the voucher from the database
+                    try {
+                        dbUpdater.removeVoucher(voucherCode);
+
+                        JOptionPane.showMessageDialog(frame,
+                                "Voucher redeemed successfully! $" + String.format("%.2f", voucherValue)
+                                + " will be applied to your total.",
+                                "Voucher Redeemed",
+                                JOptionPane.INFORMATION_MESSAGE);
+                    } catch (Exception ex) {
+                        JOptionPane.showMessageDialog(frame,
+                                "Voucher redeemed, but there was an issue removing it from the database.",
+                                "Database Error",
+                                JOptionPane.ERROR_MESSAGE);
+                        ex.printStackTrace();
+                    }
+                } else {
+                    JOptionPane.showMessageDialog(frame,
+                            "The voucher code entered does not exist or is invalid.",
+                            "Invalid Voucher",
+                            JOptionPane.WARNING_MESSAGE);
+                }
+            }
+        });
+
         selectShowtimeLabel = new JLabel("Show Times");
         selectShowtimeLabel.setHorizontalAlignment(SwingConstants.LEFT);
-        selectShowtimeLabel.setForeground(Color.WHITE);
+        selectShowtimeLabel.setForeground(Color.white);
         selectShowtimeLabel.setFont(new Font("Arial", Font.PLAIN, 15));
-        selectShowtimeLabel.setBounds(900, 140, 254, 45);
+        selectShowtimeLabel.setBounds(1000, 140, 254, 45);
         selectShowtimeLabel.setVisible(false);
         add(selectShowtimeLabel);
 
         showtimeDetailsLabel = new JTextArea("");
-        showtimeDetailsLabel.setForeground(Color.WHITE);
+        showtimeDetailsLabel.setForeground(Color.white);
         showtimeDetailsLabel.setFont(new Font("Arial", Font.PLAIN, 15));
-        showtimeDetailsLabel.setBounds(900, 215, 254, 100);
+        showtimeDetailsLabel.setBounds(1000, 215, 254, 100);
         showtimeDetailsLabel.setVisible(false);
         showtimeDetailsLabel.setLineWrap(true);
         showtimeDetailsLabel.setWrapStyleWord(true);
@@ -295,12 +388,12 @@ public class MainView extends JPanel {
         showtimeDetailsLabel.setEditable(false);
         add(showtimeDetailsLabel);
 
-        showtimeSelectComboBox = new JComboBox<>(new String[0]);
+        showtimeSelectComboBox = new JComboBox(new String[0]);
         showtimeSelectComboBox.setFont(new Font("Arial", Font.PLAIN, 15));
-        showtimeSelectComboBox.setBorder(new MatteBorder(0, 0, 3, 0, Color.LIGHT_GRAY));
-        showtimeSelectComboBox.setForeground(Color.WHITE);
-        showtimeSelectComboBox.setBackground(Color.GRAY);
-        showtimeSelectComboBox.setBounds(900, 180, 200, 28);
+        showtimeSelectComboBox.setBorder(new MatteBorder(0, 0, 3, 0, (Color) Color.LIGHT_GRAY));
+        showtimeSelectComboBox.setForeground(Color.white);
+        showtimeSelectComboBox.setBackground(Color.gray);
+        showtimeSelectComboBox.setBounds(1000, 180, 200, 28);
         showtimeSelectComboBox.setOpaque(true);
         showtimeSelectComboBox.setVisible(false);
 
@@ -347,21 +440,20 @@ public class MainView extends JPanel {
         });
         add(showtimeSelectComboBox);
 
-        // Theatre Components
         selectTheatreLabel = new JLabel("Theatres");
         selectTheatreLabel.setHorizontalAlignment(SwingConstants.LEFT);
-        selectTheatreLabel.setForeground(Color.WHITE);
+        selectTheatreLabel.setForeground(Color.white);
         selectTheatreLabel.setFont(new Font("Arial", Font.PLAIN, 15));
-        selectTheatreLabel.setBounds(600, 140, 254, 45);
+        selectTheatreLabel.setBounds(700, 140, 254, 45);
         selectTheatreLabel.setVisible(false);
         add(selectTheatreLabel);
 
-        theatreSelectComboBox = new JComboBox<>(new String[0]);
+        theatreSelectComboBox = new JComboBox(new String[0]);
         theatreSelectComboBox.setFont(new Font("Arial", Font.PLAIN, 15));
-        theatreSelectComboBox.setBorder(new MatteBorder(0, 0, 3, 0, Color.LIGHT_GRAY));
-        theatreSelectComboBox.setForeground(Color.WHITE);
-        theatreSelectComboBox.setBackground(Color.GRAY);
-        theatreSelectComboBox.setBounds(600, 180, 200, 28);
+        theatreSelectComboBox.setBorder(new MatteBorder(0, 0, 3, 0, (Color) Color.LIGHT_GRAY));
+        theatreSelectComboBox.setForeground(Color.white);
+        theatreSelectComboBox.setBackground(Color.gray);
+        theatreSelectComboBox.setBounds(700, 180, 200, 28);
         theatreSelectComboBox.setOpaque(true);
         theatreSelectComboBox.setVisible(false);
 
@@ -372,11 +464,13 @@ public class MainView extends JPanel {
                         .findTheatre((String) theatreSelectComboBox.getSelectedItem());
 
                 if (currentTheatre != null) {
+
                     currentTheatre = login.getDataController()
                             .findTheatre((String) theatreSelectComboBox.getSelectedItem());
                     currentShowtime = null;
                     if (currentTheatre != null) {
-                        DefaultComboBoxModel<String> model2 = (DefaultComboBoxModel<String>) showtimeSelectComboBox.getModel();
+
+                        DefaultComboBoxModel model2 = (DefaultComboBoxModel) showtimeSelectComboBox.getModel();
                         model2.removeAllElements();
                         ArrayList<Showtime> showtimeList = login.getDataController().findAllShowtime(currentMovie,
                                 currentTheatre);
@@ -385,6 +479,7 @@ public class MainView extends JPanel {
                         }
                         showtimeSelectComboBox.setModel(model2);
                         showtimeSelectComboBox.setVisible(true);
+                        // noShowTimeSelectedLabel.setVisible(true);
                         selectShowtimeLabel.setVisible(true);
                     }
                 }
@@ -392,7 +487,6 @@ public class MainView extends JPanel {
         });
         add(theatreSelectComboBox);
 
-        // Movie Components
         movieDetailsLabel = new JTextArea("");
         movieDetailsLabel.setForeground(Color.WHITE);
         movieDetailsLabel.setFont(new Font("Arial", Font.PLAIN, 15));
@@ -420,7 +514,7 @@ public class MainView extends JPanel {
         posterCard.setVisible(true);
         add(posterCard);
 
-        Vector<String> list_of_movies = new Vector<>();
+        Vector<String> list_of_movies = new Vector<String>();
         for (int i = 0; i < login.getDataController().getlist_of_movies().size(); i++) {
             if (login.getCurrentRegisteredUser() != null) {
                 if (!login.getDataController().getlist_of_movies().get(i).getMovieAnnouncement().getPrAnnounceDate()
@@ -442,7 +536,7 @@ public class MainView extends JPanel {
 
         JTextField searchBar = new JTextField();
         searchBar.setFont(new Font("Arial", Font.PLAIN, 15));
-        searchBar.setBorder(new MatteBorder(0, 0, 3, 0, Color.LIGHT_GRAY));
+        searchBar.setBorder(new MatteBorder(0, 0, 3, 0, (Color) Color.LIGHT_GRAY));
         searchBar.setForeground(Color.WHITE);
         searchBar.setBackground(Color.GRAY);
         searchBar.setBounds(85, 110, 311, 28);
@@ -510,7 +604,7 @@ public class MainView extends JPanel {
                         posterCard.setVisible(true);
                         movieSynopsisLabel.setVisible(true);
 
-                        DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) theatreSelectComboBox.getModel();
+                        DefaultComboBoxModel model = (DefaultComboBoxModel) theatreSelectComboBox.getModel();
                         model.removeAllElements();
                         ArrayList<Theatre> theatreList = login.getDataController().findTheatresPlayingMovie(currentMovie);
                         for (int i = 0; i < theatreList.size(); i++) {
@@ -524,9 +618,9 @@ public class MainView extends JPanel {
             }
         });
 
-        movieSelectComboBox = new JComboBox<>(list_of_movies);
+        movieSelectComboBox = new JComboBox(list_of_movies);
         movieSelectComboBox.setFont(new Font("Arial", Font.PLAIN, 15));
-        movieSelectComboBox.setBorder(new MatteBorder(0, 0, 3, 0, Color.LIGHT_GRAY));
+        movieSelectComboBox.setBorder(new MatteBorder(0, 0, 3, 0, (Color) Color.LIGHT_GRAY));
         movieSelectComboBox.setForeground(Color.WHITE);
         movieSelectComboBox.setBackground(Color.GRAY);
         movieSelectComboBox.setBounds(85, 180, 311, 28);
@@ -551,7 +645,7 @@ public class MainView extends JPanel {
                 posterCard.setVisible(true);
                 movieSynopsisLabel.setVisible(true);
 
-                DefaultComboBoxModel<String> model = (DefaultComboBoxModel<String>) theatreSelectComboBox.getModel();
+                DefaultComboBoxModel model = (DefaultComboBoxModel) theatreSelectComboBox.getModel();
                 model.removeAllElements();
                 ArrayList<Theatre> theatreList = login.getDataController().findTheatresPlayingMovie(currentMovie);
                 for (int i = 0; i < theatreList.size(); i++) {
@@ -564,7 +658,6 @@ public class MainView extends JPanel {
         });
         add(movieSelectComboBox);
 
-        // Other Buttons and Labels
         cancelTicketButton = new JLabel("Cancel Ticket");
         cancelTicketButton.setForeground(Color.WHITE);
         cancelTicketButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
@@ -583,6 +676,7 @@ public class MainView extends JPanel {
         });
         cancelTicketButton.setBounds(1100, 14, 120, 32);
         cancelTicketButton.setVisible(true);
+
         add(cancelTicketButton);
 
         logoutButton = new JLabel("Logout");
@@ -602,6 +696,7 @@ public class MainView extends JPanel {
             }
         });
         logoutButton.setBounds(30, 5, 70, 50);
+
         add(logoutButton);
 
         if (login.getCurrentUser().getreg_or_unreg_user().compareTo("Registered") == 0) {
@@ -609,6 +704,7 @@ public class MainView extends JPanel {
             annualFeeButton.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
             annualFeeButton.setFont(new Font("Arial", Font.PLAIN, 15));
             annualFeeButton.setForeground(Color.WHITE);
+
             annualFeeButton.setHorizontalAlignment(SwingConstants.CENTER);
             annualFeeButton.setBackground(Color.DARK_GRAY);
             annualFeeButton.setOpaque(true);
@@ -628,18 +724,18 @@ public class MainView extends JPanel {
                         if (login.getDataController().getInst().CardInfo_verification(name, cn)) {
                             JOptionPane.showMessageDialog(null,
                                     "Annual Fee has been paid.",
-                                    "Annual Fee Payment", JOptionPane.INFORMATION_MESSAGE);
+                                    (String) "Annual Fee Payment", JOptionPane.INFORMATION_MESSAGE);
                             LocalDate today = LocalDate.now();
                             Date date = new Date(today.getDayOfMonth(), today.getMonthValue(), today.getYear() + 1);
                             login.getCurrentRegisteredUser().setdate_of_feeDeposit(date);
                         } else {
                             JOptionPane.showMessageDialog(null, "Annual Fee payment failed.",
-                                    "Annual Fee Payment", JOptionPane.INFORMATION_MESSAGE);
+                                    (String) "Annual Fee Payment", JOptionPane.INFORMATION_MESSAGE);
                         }
 
                     } else {
                         JOptionPane.showMessageDialog(null, "Annual Fee is already paid.",
-                                "Annual Fee Payment", JOptionPane.INFORMATION_MESSAGE);
+                                (String) "Annual Fee Payment", JOptionPane.INFORMATION_MESSAGE);
                     }
 
                     frame.revalidate();
@@ -669,10 +765,11 @@ public class MainView extends JPanel {
         cartButton.setBounds(1250, 14, 90, 32);
         add(cartButton);
 
-        // Set background image
+        // Set bg image
         homeBackground = new JLabel("");
         homeBackground.setBounds(-2, -1, 1366, 768);
-        homeBackground.setIcon(new ImageIcon(MainView.class.getResource("/bg.jpg")));
+        homeBackground.setIcon(new ImageIcon(LoginView.class.getResource("/bg2.jpg")));
+        homeBackground.setHorizontalAlignment(SwingConstants.CENTER);
         add(homeBackground);
     }
 
@@ -722,4 +819,6 @@ public class MainView extends JPanel {
         seatGraphicLabel.setText(tempGraphic.toString());
         seatGraphicLabel.setVisible(true);
     }
+
+    private static final long serialVersionUID = 1L;
 }

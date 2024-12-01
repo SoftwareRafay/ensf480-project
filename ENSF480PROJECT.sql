@@ -1,6 +1,6 @@
-DROP DATABASE IF EXISTS ENSF614PROJECT;
-CREATE DATABASE IF NOT EXISTS ENSF614PROJECT;
-USE ENSF614PROJECT;
+DROP DATABASE IF EXISTS ENSF480PROJECT;
+CREATE DATABASE IF NOT EXISTS ENSF480PROJECT;
+USE ENSF480PROJECT;
 
 CREATE TABLE BankName (
     id INT AUTO_INCREMENT PRIMARY KEY,
@@ -80,14 +80,24 @@ CREATE TABLE RegisteredUsers (
 );
 
 CREATE TABLE Tickets (
-    ticket_id INT AUTO_INCREMENT PRIMARY KEY, 
-    movie_name VARCHAR(255) NOT NULL,        
+    ticket_id INT PRIMARY KEY, 
+    movie_id int,        
     seat_row INT NOT NULL,                   
     seat_column INT NOT NULL,                
-    screen_room int,       
+    show_time int,       
     booking_date DATE NOT NULL,             
-	FOREIGN KEY (screen_room) REFERENCES ScreeningRooms(id)
+	FOREIGN KEY (show_time) REFERENCES Showtimes (ShowtimeID),
+	FOREIGN KEY (movie_id) REFERENCES Movies(id)
 );
+
+CREATE TABLE Vouchers (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    voucher_code VARCHAR(255) NOT NULL UNIQUE,
+    value DECIMAL(10, 2) NOT NULL,
+    user_type VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
 
 
 -- Inserting into BankName table
@@ -118,34 +128,34 @@ VALUES
 -- Inserting into Movies table
 INSERT INTO Movies (id, Title, Genre, Year, Director, Duration, Rating, code, Price, Description)
 VALUES 
-(200, 'Venom: The Last Dance', 'Action', 2024, 'Kelly Marcel', 109, 6.2, 've', 24.99, 'Eddie Brock and Venom must make a devastating decision as they\'re pursued by a mysterious military man and alien monsters from Venom\'s home world.'),
-(201, 'Moana 2', 'Animation', 2024, 'Dave Jr. Derrick', 100, 7.2, 'mo', 24.99, 'Moana journeys to the far seas of Oceania after receiving an unexpected call from her wayfinding ancestors.'),
-(202, 'Wicked', 'Musical', 2024, 'John M. Chu', 107.0, 8.2, 'wi', 24.99, 'Misunderstood because of her green skin, a young woman named Elphaba forges an unlikely but profound friendship with Glinda, a student with an unflinching desire for popularity.'),
-(203, 'Red One', 'Action, Adventure, Comedy, Family', 2024, 'Jake Kasdan', 123.0, 6.9, 're', 24.99, 'When a villain kidnaps Santa Claus from the North Pole, an E.L.F. (Extremely Large and Formidable) operative joins forces with the world\'s most accomplished tracker to find him and save Christmas.');
+(200, 'Venom: The Last Dance', 'Action', 2024, 'Kelly Marcel', 109, 6.2, 've', 25, 'Eddie Brock and Venom must make a devastating decision as they\'re pursued by a mysterious military man and alien monsters from Venom\'s home world.'),
+(201, 'Moana 2', 'Animation', 2024, 'Dave Jr. Derrick', 100, 7.2, 'mo', 25, 'Moana journeys to the far seas of Oceania after receiving an unexpected call from her wayfinding ancestors.'),
+(202, 'Wicked', 'Musical', 2024, 'John M. Chu', 107.0, 8.2, 'wi', 25, 'Misunderstood because of her green skin, a young woman named Elphaba forges an unlikely but profound friendship with Glinda, a student with an unflinching desire for popularity.'),
+(203, 'Red One', 'Action, Adventure, Comedy, Family', 2024, 'Jake Kasdan', 123.0, 6.9, 'ro', 25, 'When a villain kidnaps Santa Claus from the North Pole, an E.L.F. (Extremely Large and Formidable) operative joins forces with the world\'s most accomplished tracker to find him and save Christmas.');
 
 -- Inserting into Announcements table
 INSERT INTO Announcements (id, Start_Day, StartMonth, StartYear, EndDay, EndMonth, EndYear, MovieID)
 VALUES 
-(800, 29, 11, 2020, 11, 11, 2022, 200),
-(801, 11, 18, 2020, 18, 11, 2022, 201),
-(802, 20, 11, 2020, 7, 10, 2022, 202),
-(803, 15, 11, 2020, 3, 10, 2022, 203);
+(800, 29, 11, 2023, 11, 11, 2024, 200),
+(801, 11, 18, 2023, 18, 11, 2024, 201),
+(802, 20, 11, 2023, 7, 10, 2024, 202),
+(803, 15, 11, 2023, 3, 10, 2024, 203);
 
 -- Inserting into Showtimes table
 INSERT INTO Showtimes (ShowtimeID, MovieID, RoomID, Day, Month, Year, Hour, Minute)
 VALUES 
-(700, 200, 300, 15, 12, 2022, 7, 15),
-(701, 201, 301, 17, 12, 2022, 8, 30),
-(702, 202, 302, 16, 12, 2022, 6, 45),
-(703, 203, 303, 18, 12, 2022, 14, 15),
-(704, 203, 300, 23, 12, 2022, 12, 30),
-(705, 202, 301, 25, 12, 2022, 17, 15),
-(706, 201, 302, 27, 12, 2022, 20, 15),
-(707, 200, 303, 29, 12, 2022, 20, 0),
-(708, 200, 300, 31, 12, 2022, 14, 0),
-(709, 201, 301, 1, 1, 2023, 16, 0),
-(710, 201, 302, 3, 1, 2023, 9, 0),
-(711, 201, 302, 3, 1, 2023, 9, 0);
+(700, 200, 300, 15, 11, 2024, 7, 15),
+(701, 201, 301, 17, 11, 2024, 8, 30),
+(702, 202, 302, 16, 11, 2024, 6, 45),
+(703, 203, 303, 18, 11, 2024, 14, 15),
+(704, 203, 300, 23, 11, 2024, 12, 30),
+(705, 202, 301, 25, 11, 2024, 17, 15),
+(706, 201, 302, 27, 11, 2024, 20, 15),
+(707, 200, 303, 29, 11, 2024, 20, 00),
+(708, 200, 300, 31, 11, 2024, 14, 00),
+(709, 201, 301, 1, 11, 2024, 16, 00),
+(710, 201, 302, 3, 11, 2024, 9, 00),
+(711, 201, 302, 3, 11, 2024, 9, 00);
 
 -- Inserting data into RegisteredUsers table
 INSERT INTO RegisteredUsers (id, username, password, email, first_name, last_name, bank_info_id, Day, Month, Year)

@@ -3,6 +3,7 @@ package database;
 import Entity.*;
 
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ReadDB {
@@ -20,6 +21,7 @@ public class ReadDB {
             gettingAnnouncements();
             gettingBankInfo();
             gettingUsers();
+            fetchReservationsFromDatabase();
         } catch (SQLException e) {
             
             System.err.println("Error loading database: " + e.getMessage());
@@ -198,4 +200,80 @@ public class ReadDB {
             }
         }
     }
+
+
+    public void fetchReservationsFromDatabase() throws SQLException {
+        String query = """
+            SELECT * FROM Tickets
+        """;
+    
+        try (Connection connection = DatabaseConnection.getConnection();
+             Statement statement = connection.createStatement();
+             ResultSet rs = statement.executeQuery(query)) {
+    
+            while (rs.next()) {
+                int movieId = rs.getInt("movie_id");
+                int row = rs.getInt("seat_row");
+                int col = rs.getInt("seat_column");
+                int screenRoom = rs.getInt("show_time");
+    
+                // Fetch the Movie and Showtime objects
+                Movie movie = database_control.searchMovie(movieId);
+                Showtime show = database_control.searchShowtimeInfo(screenRoom);
+    
+                
+                if (show != null) {
+                    Seat seat = show.getSeats()[row][col]; 
+                    seat.setSeat_booked_or_not(true); 
+                }
+    
+                
+                Seat seat = new Seat(row, col);
+                Ticket ticket = new Ticket(movie, show, seat);
+                Reservation reservation = new Reservation(movie, show, seat);
+    
+                
+                database_control.addTicket(ticket); 
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching tickets from database: " + e.getMessage());
+        }
+    }
+
+    public boolean isTicketExists(int ticketId) {
+        String query = "SELECT COUNT(*) FROM Tickets WHERE ticket_id = ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)) {
+    
+            preparedStatement.setInt(1, ticketId);
+            try (ResultSet rs = preparedStatement.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getInt(1) > 0;
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error checking ticket existence: " + e.getMessage());
+        }
+        return false;
+    }
+
+    public Double getVoucherValue(String voucherCode) {
+        String query = "SELECT value FROM Vouchers WHERE voucher_code = ?";
+        try (Connection connection = DatabaseConnection.getConnection();
+             PreparedStatement ps = connection.prepareStatement(query)) {
+            ps.setString(1, voucherCode);
+            try (ResultSet rs = ps.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getDouble("value");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error fetching voucher value: " + e.getMessage());
+        }
+        return null; 
+    }
+    
+    
+    
 }
+
