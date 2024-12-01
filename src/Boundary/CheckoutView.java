@@ -175,15 +175,8 @@
 						 processPayment(frame, backend, finalTotal, backend.getCurrentRegisteredUser().getBankInfo(), email);
 		 
 						 UpdateDB dbUpdater = new UpdateDB();
-						 try {
-							 dbUpdater.saveTicket();
-						 } catch (Exception ex) {
-							 JOptionPane.showMessageDialog(frame, 
-									 "Issue saving ticket to database", 
-									 "Database Error", 
-									 JOptionPane.ERROR_MESSAGE);
-							 ex.printStackTrace();
-						 }
+						 dbUpdater.saveTicket();
+
 					 } else {
 						 invalidInfoErrorLabel.setVisible(true);
 					 }

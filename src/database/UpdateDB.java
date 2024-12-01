@@ -107,11 +107,12 @@ public class UpdateDB {
     
             preparedStatement.executeBatch(); 
         } catch (SQLException e) {
-           
+            
             e.printStackTrace();
             throw new RuntimeException("Error while saving tickets to the database.", e);
         }
     }
+    
     
 
 public void removeTicketFromDatabase(int ticketId) {
