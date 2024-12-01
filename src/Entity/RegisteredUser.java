@@ -43,7 +43,6 @@ public class RegisteredUser extends User
 		date_of_feeDeposit = a;
 	}
 
-	
 	//Has RU paid annual fee?
 	public boolean isFeePayed() {
 		return date_of_feeDeposit.is_before_CurrentDate();

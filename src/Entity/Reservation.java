@@ -1,5 +1,4 @@
 /*
- * ENSF 480: Term Project - Movie App
  * 2024-11-25
  * Authors: Group 5-L01
  * Version: FINAL

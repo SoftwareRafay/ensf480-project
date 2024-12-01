@@ -38,8 +38,6 @@ public class Receipt {
 		}
 	}
 
-	
-
 	// Getters and Setters
 	public Payment getPayment() {
 		return payment;

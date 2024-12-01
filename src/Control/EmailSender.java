@@ -1,4 +1,4 @@
-//Group 5
+//Authors: Group 5-L01
 
 package Control;
 import java.util.Properties;
